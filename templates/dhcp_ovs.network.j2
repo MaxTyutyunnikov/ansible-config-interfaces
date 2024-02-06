@@ -1,0 +1,5 @@
+[Match]
+Name={{ ovs_interfaces|selectattr('method', 'match', 'dhcp')|map(attribute='name')|join(',')  }}
+
+[Network]
+DHCP=yes

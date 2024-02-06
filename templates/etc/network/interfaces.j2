@@ -252,7 +252,7 @@ iface {{ item['name'] }} inet {{ item['method']|lower }}
 {%         endfor %}
 {%       endif %}
   ovs_bridge {{ item['bridge'] }}
-  ovs_type OVSIntPort
+  ovs_type {{ item['type']|d('OVSIntPort') }}
 {%       if item['options'] is defined %}
   ovs_options {% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}
 

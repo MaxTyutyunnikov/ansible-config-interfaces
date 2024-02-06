@@ -106,3 +106,11 @@
     (enable_configured_interfaces_after_defining or item['enable']) and
     item['configure'] and
     config_interface['changed']
+
+- name: Add thin provisoning hook
+  template:
+    src: "dhcp_ovs.network.j2"
+    dest: "/etc/systemd/network/dhcp_ovs.network"
+    owner: root
+    group: root
+    mode: 0755
