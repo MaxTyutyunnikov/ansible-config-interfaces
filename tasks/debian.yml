@@ -1,4 +1,27 @@
 ---
+
+- name: debian | Installing OVS Packages
+  apt:
+    name: "{{ openvswitch_debian_packages }}"
+    state: "present"
+  become: true
+
+- name: service | Ensuring OVS Service Is Started And Enabled On Boot
+  service:
+    name: "openvswitch-switch"
+    state: "started"
+    enabled: true
+  become: true
+
+- name: system_tuning | Managing sysctl
+  sysctl:
+    name: "{{ item['name'] }}"
+    value: "{{ item['value'] }}"
+    state: "present"
+  become: true
+  with_items: '{{ openvswitch_system_tuning }}'
+  when: openvswitch_system_tuning is defined
+
 - name: debian | Installing Pre-Req Packages
   apt:
     name: ["lldpd"]
@@ -114,3 +137,28 @@
     owner: root
     group: root
     mode: 0755
+
+- name: bridges | Managing OVS Bridges
+  openvswitch_bridge:
+    bridge: "{{ item['bridge'] }}"
+    parent: "{{ item['parent']|default(omit) }}"
+    fail_mode: "{{ item['fail_mode']|default('standalone') }}"
+    state: "{{ item['state'] }}"
+    timeout: "{{ item['timeout']|default(omit) }}"
+    vlan: "{{ item['vlan']|default(omit) }}"
+  become: true
+  with_items: '{{ dyn_openvswitch_bridges }}'
+  when: dyn_openvswitch_bridges is defined
+
+- name: ports | Managing OVS Ports
+  openvswitch_port:
+    bridge: "{{ item[0]['bridge'] }}"
+    port: "{{ item[1]['port'] }}"
+    state: "{{ item[1]['state'] }}"
+    tag: "{{ item[1]['tag']|default(omit) }}"
+    timeout: "{{ item[0]['timeout']|default(omit) }}"
+  become: true
+  with_subelements:
+    - '{{ dyn_openvswitch_ports }}'
+    - ports
+  when: dyn_openvswitch_ports is defined

@@ -1,6 +1,10 @@
 ---
 # defaults file for ansible-config-interfaces
 
+openvswitch_debian_packages:
+  - 'openvswitch-switch'
+  - 'openvswitch-common'
+
 config_interface_template: etc/network/interfaces.j2
 
 # Defines if network bonds should be configured as defined
@@ -36,6 +40,22 @@ dns_search: "{{ pri_domain_name }}"
 # ovs_interfaces should be brought up after defining. This can be overridden
 # with the `enable` option per interface. Please see the examples below.
 enable_configured_interfaces_after_defining: false
+
+openvswitch_system_tuning: []
+  # - name: 'net.ipv4.ip_forward'
+  #   value: 1
+
+dyn_openvswitch_bridges: []
+  # - bridge: 'br-int'
+  #   state: 'present'
+
+dyn_openvswitch_ports: []
+  # - bridge: 'br-int'
+  #   ports:
+  #     - port: 'enp0s9'
+  #       state: 'present'
+  #     - port: 'enp0s10'
+  #       state: 'present'
 
 # Defines non Open vSwitch network bonds
 network_bonds:
