@@ -271,3 +271,5 @@ dns-nameservers {{ dns_nameservers|join (' ') }}
 {% if dns_search is defined and dns_search != None %}
 dns-search {{ dns_search }}
 {% endif %}
+
+source /etc/network/interfaces.d/*
